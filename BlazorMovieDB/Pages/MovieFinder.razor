@@ -1,0 +1,66 @@
+﻿@*@page "/moviefinder"
+
+<h1>Поиск по фильмам</h1>
+<button @onclick="FindFilm">Find</button>
+<input placeholder="Movie title" @bind="FilmName" />
+@if (!(movies.Count == 0))
+{
+    @foreach (var mov in movies)
+    {
+        <p>
+            Название: @mov.Name
+        </p>
+        <p>
+            Рейтинг : @mov.Rating
+        </p>
+        <p>
+            Режисер: @mov.Director
+        </p>
+
+        <p>
+            Актеры: @mov.Actors
+        </p>
+        <p>
+            Тэги: @mov.Tags
+        </p>
+
+        <p>
+            Описание: @linqer.Overview(mov.TMBD);
+        </p>
+
+        <p>
+            Рекомендации: @TenChoice(mov.TMBD)
+        </p>
+        <img src=@linqer.Picture()>
+    }
+}
+
+
+
+@code{
+    private TMBDApi linqer = new TMBDApi();
+
+    private Set<Movie> movies = new Set<Movie>();
+    private AllworkwithDB amt = new AllworkwithDB();
+
+
+    private string FilmName;
+    public void FindFilm()
+    {
+        movies = new Set<Movie>();
+        if (!string.IsNullOrWhiteSpace(FilmName))
+        {
+            movies._items = amt.MoviesbyName(FilmName);
+
+        }
+
+
+    }
+
+    public string TenChoice(string TMBD)
+    {
+        return linqer.InformationFromServer(TMBD);
+    }
+
+
+}*@

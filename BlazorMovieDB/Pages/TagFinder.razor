@@ -1,0 +1,50 @@
+﻿@page "/tagfinder"
+@using BlazorMovieDB.Data
+
+<h1>Поиск по тэгам</h1>
+<button @onclick="FindTag">Find!</button>
+<input placeholder="Tag" @bind="TagName" />
+@if (!(tags.Count == 0))
+{
+    @foreach (var tag in tags)
+    {
+        <p>
+            Название: @tag.tag
+        </p>
+        <div class="row">
+            Фильмы:
+            @foreach (Movie m in movies[tag])
+            {
+                <div class="col">
+                Title: @m.Title
+                </div>
+            }
+            </div>
+            
+        
+    }
+}
+
+
+
+@code{
+
+    private List<Tag> tags = new List<Tag>();
+    private Loader amt = new Loader();
+    private Dictionary<Tag, List<Movie>> movies = new Dictionary<Tag, List<Movie>>();
+
+    private string TagName;
+    public void FindTag()
+    {
+        if (!string.IsNullOrWhiteSpace(TagName))
+        {
+            tags = amt.TagsbyName(TagName);
+            foreach (var t in tags)
+            {
+                movies.Add(t, t.MovieTags.Select(mt => mt.Movie).ToList());
+            }
+        }
+    }
+
+
+}
