@@ -73,6 +73,7 @@ namespace BlazorMovieDB.Data
                 if (false/*reload*/)
                 {
                     Download();
+
                 }
 
                 void Download()
