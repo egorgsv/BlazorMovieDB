@@ -2,8 +2,8 @@
 @using BlazorMovieDB.Data
 
 <h1>Поиск по тэгам</h1>
-<button @onclick="FindTag">Find!</button>
 <input placeholder="Tag" @bind="TagName" />
+<button @onclick="FindTag">Find!</button>
 @if (!(tags.Count == 0))
 {
     @foreach (var tag in tags)
@@ -11,15 +11,15 @@
         <p>
             Название: @tag.tag
         </p>
-        <div class="row">
+        <div class="col">
             Фильмы:
             @foreach (Movie m in movies[tag])
             {
-                <div class="col">
+                <div class="row">
                 Title: @m.Title
                 </div>
             }
-            </div>
+        </div>
             
         
     }

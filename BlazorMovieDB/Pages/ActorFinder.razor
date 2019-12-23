@@ -1,68 +1,52 @@
-﻿@*@page "/moviefinder"
-<h1>Поиск по фильмам</h1>
-<button @onclick="FindFilm">Find!</button>
-<input placeholder="Movie Title" @bind="FilmName" />
-@if (!(movies.Count == 0))
-{
-    @foreach (var mov in movies)
-    {
-        <p>
-            Название: @mov.Name
-        </p>
-        <p>
-            Рейтинг : @mov.Rating
-        </p>
-        <p>
-            Режисер: @mov.Director
-        </p>
-
-        <p>
-            Актеры: @mov.Actors
-        </p>
-        <p>
-            Тэги: @mov.Tags
-        </p>
-
-        <p>
-            Описание: @linqer.Overview(mov.TMBD);
-        </p>
-
-        <p>
-            Рекомендации: @TenChoice(mov.TMBD)
-        </p>
-        <img src=@linqer.Picture()>
-    }
-}
+﻿@page "/actorfinder"
+@using BlazorMovieDB.Data
+<h1>Поиск по Актерам</h1>
+<button @onclick="FindActor">Find</button>
+<input placeholder="Actor Name" @bind="ActorName" />
+       @if (!(actors.Count == 0))
+       {
+           @foreach (var act in actors)
+           {
+               <p>
+                   Имя: @act.Name
+               </p>
+               <div class="col">
+                   Фильмы:
+                   @foreach (Movie m in movies[act])
+                   {
+                       <div class="row">
+                           Title: @m.Title
+                       </div>
+                   }
+               </div>
+           }
+       }
 
 
 
-@code{
-    private TMBDApi linqer = new TMBDApi();
+       @code{
 
-    private Set<Movie> movies = new Set<Movie>();
-    private AllworkwithDB amt = new AllworkwithDB();
-
-
-    private string FilmName;
-    public void FindFilm()
-    {
-        movies = new Set<Movie>();
-        if (!string.IsNullOrWhiteSpace(FilmName))
-        {
-            movies._items = amt.MoviesbyName(FilmName);
-
-        }
+           private List<Actor> actors = new List<Actor>();
+           private Loader amt = new Loader();
 
 
-    }
+           private Dictionary<Actor, List<Movie>> movies = new Dictionary<Actor, List<Movie>>();
 
-    public string TenChoice(string TMBD)
-    {
-        return linqer.InformationFromServer(TMBD);
-    }
+           private string ActorName;
+           public void FindActor()
+           {
+               if (!string.IsNullOrWhiteSpace(ActorName))
+               {
+                   actors = amt.ActorsbyName(ActorName);
+                   foreach (var a in actors)
+                   {
+                       movies.Add(a, a.MovieActors.Select(ma => ma.Movie).ToList());
+                   }
+               }
+           }
 
 
-}*@
+       }
 
 
 
